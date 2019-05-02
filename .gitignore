@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!rsocket-rpc-core-0.2.14.BUILD-SNAPSHOT.jar
 *.war
 *.nar
 *.ear
