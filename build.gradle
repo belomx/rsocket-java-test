@@ -1,0 +1,82 @@
+buildscript {
+  repositories {
+    mavenCentral()
+	jcenter()	
+  }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
+  }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'com.google.protobuf'
+
+group = 'com.mentalpopcorn.rsocketrpc'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+    jcenter()
+    maven {
+        url 'https://dl.bintray.com/netifi/netifi-oss/'
+    }
+}
+
+dependencies {	
+	compile files('libs/rsocket-rpc-core-0.2.14.BUILD-SNAPSHOT.jar')
+    compile 'com.google.protobuf:protobuf-java:3.6.1'	
+	compile 'org.reactivestreams:reactive-streams:1.0.0'
+	compile group: 'io.rsocket', name: 'rsocket-core', version: '0.12.1-RC2'					
+	compile group: 'io.rsocket.rpc', name: 'rsocket-rpc-core', version: '0.2.13'
+    compile group: 'io.rsocket', name: 'rsocket-transport-netty', version: '0.12.1-RC2'
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+}
+
+protobuf {
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.6.1'
+    }
+    plugins {
+        rsocketRpc {
+            artifact = 'io.rsocket.rpc:rsocket-rpc-protobuf:0.2.12'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            rsocketRpc {}
+        }
+    }
+}
+
+// If you use Intellij add this so it can find the generated classes
+
+/*idea {
+  module {
+    sourceDirs += file("src/main/proto")
+    sourceDirs += file("src/generated/main/java")
+    sourceDirs += file("src/generated/main/rsocketRpc")
+
+    generatedSourceDirs += file('src/generated/main/java')
+    generatedSourceDirs += file('src/generated/main/rsocketRpc')
+  }
+}
+*/
+
+// clean generated code
+clean {
+  delete 'src/generated/main'
+} 
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["build/generated/source/proto/main/java", "src/main/resources", "src/main/java", "src/main/proto", "build/generated/source/proto/main/rsocketRpc"]
+        }
+    }
+}
+
+
+ 
+
